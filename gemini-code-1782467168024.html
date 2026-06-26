@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ms. Lê Hằng English - Soft Mint Learning Suite</title>
+    <!-- Tailwind CSS For UI Components -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Nhúng Font chữ: Fredoka (Bubble) & Oswald (Poster) -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Oswald', sans-serif;
+            /* Nền chuyển màu xanh lá pastel dịu nhẹ, hài hòa */
+            background: linear-gradient(-45deg, #f1f8e9, #e8f5e9, #e0f2f1, #f9fbe7);
+            background-size: 400% 400%;
+            animation: gradientAnimation 12s ease-in-out infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .font-bubble { font-family: 'Fredoka', sans-serif; }
+        .font-poster { font-family: 'Oswald', sans-serif; }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 5;
+        }
+
+        /* Card với độ tương phản thấp, viền mềm mại hài hòa */
+        .premium-card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid #d0ebd0;
+        }
+
+        .option-card {
+            -webkit-tap-highlight-color: transparent;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Hoạt họa cho Cú Mascot */
+        @keyframes owlDance {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(2deg); }
+            100% { transform: translateY(0) rotate(-2deg); }
+        }
+        @keyframes owlIdle {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+        .owl-dancing { animation: owlDance 0.35s infinite alternate; }
+        .owl-idle { animation: owlIdle 2.5s infinite ease-in-out; }
+    </style>
+</head>
+<body class="text-slate-700 antialiased pb-28 relative tracking-wide">
+
+    <!-- Canvas hiệu ứng pháo hoa sao lấp lánh -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Header Lớp Học -->
+    <header class="max-w-4xl w-full mx-auto pt-8 px-4 flex flex-col items-center relative z-10">
+        <div class="font-poster flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-emerald-600/90 to-teal-600/90 text-white font-medium text-xs md:text-sm tracking-wider uppercase shadow-sm">
+            <span>✨ LỚP HỌC TIẾNG ANH CHẤT LƯỢNG CAO - MS. LÊ HẰNG ENGLISH ✨</span>
+        </div>
+    </header>
+
+    <!-- Hộp Nhắc Nhở Từ Giáo Viên -->
+    <section class="max-w-4xl w-full mx-auto px-4 mt-5 relative z-10">
+        <div class="bg-gradient-to-br from-emerald-800/90 to-teal-900/90 border border-emerald-600/50 rounded-2xl p-5 text-center text-emerald-100 shadow-sm">
+            <span class="font-bubble font-semibold text-lg md:text-xl block mb-1 text-white">⚠️ LỜI NHẮC TỪ CÔ LÊ HẰNG ⚠️</span>
+            <p class="font-poster text-sm md:text-base tracking-wide text-emerald-200/90">
+                Hãy chú ý phân biệt kỹ các quy tắc phát âm nguyên âm/phụ âm và vị trí trọng âm (Stress) của từ con nhé. Đọc thầm từ đó lên trước khi chọn đáp án!
+            </p>
+        </div>
+    </section>
+
+    <!-- Thanh Chuyển Đổi Bài Tập -->
+    <nav class="max-w-4xl w-full mx-auto px-4 mt-5 relative z-10">
+        <div class="font-poster grid grid-cols-2 gap-3 p-1.5 bg-slate-900/90 rounded-xl border border-emerald-800/40 shadow-sm">
+            <button onclick="changeSectionTab('ex1')" id="tab-ex1" class="py-2.5 text-xs md:text-sm font-medium rounded-lg text-center option-card active:scale-[0.97] bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm">
+                🎯 EXERCISE 1 (PRONUNCIATION)
+            </button>
+            <button onclick="changeSectionTab('ex2')" id="tab-ex2" class="py-2.5 text-xs md:text-sm font-medium rounded-lg text-center option-card active:scale-[0.97] text-slate-400 hover:text-white">
+                ⚡ EXERCISE 2 (WORD STRESS)
+            </button>
+        </div>
+    </nav>
+
+    <!-- Khung Hiển Thị Câu Hỏi Chính -->
+    <main class="max-w-4xl w-full mx-auto px-4 mt-5 relative z-10">
+        <div class="premium-card rounded-2xl p-5 md:p-8 shadow-sm">
+            
+            <div class="mb-5 flex items-start gap-3">
+                <span id="header-icon" class="text-xl p-2 bg-emerald-50 rounded-lg text-emerald-700 border border-emerald-100 shrink-0">🗣️</span>
+                <h2 id="exercise-main-title" class="font-bubble text-slate-800 font-medium text-sm md:text-base leading-relaxed pt-0.5">
+                    Exercise 1: Mark the letter A, B, C, or D to indicate the word whose underlined part differs from the other three in pronunciation in each of the following questions.
+                </h2>
+            </div>
+            
+            <div class="h-[1px] bg-gradient-to-r from-emerald-200 via-teal-200 to-transparent mb-6"></div>
+
+            <div id="quiz-feed-wrapper" class="space-y-8">
+                <!-- Javascript sẽ tự động điền dữ liệu câu hỏi vào đây -->
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Bạn Cú Mascot Đồng Hành -->
+    <div class="fixed bottom-20 right-4 md:right-8 z-40 flex flex-col items-center pointer-events-none select-none">
+        <div id="owl-speech-bubble" class="font-bubble bg-white border border-emerald-100 text-slate-600 text-xs font-medium px-3 py-1.5 rounded-xl shadow-sm mb-2 max-w-[160px] text-center opacity-95 transition-all duration-300">
+            Chào con yêu! Cùng làm bài thôi nào! 💚
+        </div>
+        <div id="owl-mascot" class="owl-idle text-4xl md:text-5xl pointer-events-auto cursor-pointer" onclick="pokeMascot()">
+            🦉
+        </div>
+    </div>
+
+    <!-- Thanh Hiển Thị Điểm Số Cố Định Phía Dưới -->
+    <div class="font-poster fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-emerald-950/40 py-3 px-4 flex justify-between items-center shadow-lg z-50">
+        <div class="text-white font-medium text-xs md:text-sm flex items-center gap-2 bg-slate-950 px-4 py-1.5 rounded-lg">
+            🥇 <span class="text-slate-400">ĐIỂM CỦA CON:</span> <span id="footer-live-score" class="text-2xl font-bold text-emerald-400 ml-1">0</span>
+        </div>
+        <button onclick="alertFinishMessage()" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:scale-95 text-white font-medium px-6 py-2 rounded-lg flex items-center gap-1.5 shadow-sm transition-all text-xs md:text-sm uppercase tracking-wider">
+            Nộp Bài Cho Cô Hằng 🚀
+        </button>
+    </div>
+
+    <script>
+        // --- 1. Hệ Thống Tạo Sao Lấp Lánh (Star Confetti Particle System) ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class StarParticle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 7 + 4;
+                this.speedX = Math.random() * 5 - 2.5;
+                this.speedY = Math.random() * -5 - 2;
+                this.gravity = 0.2;
+                // Sử dụng dải màu nhẹ nhàng hòa hợp với tone nền mint
+                this.color = `hsl(${Math.random() * 60 + 90}, 65%, 65%)`;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.015;
+            }
+            update() {
+                this.speedY += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.translate(this.x, this.y);
+                ctx.moveTo(0, -this.size);
+                for (let i = 0; i < 5; i++) {
+                    ctx.rotate(Math.PI / 5);
+                    ctx.lineTo(0, -this.size * 0.4);
+                    ctx.rotate(Math.PI / 5);
+                    ctx.lineTo(0, -this.size);
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function spawnConfetti(x, y) {
+            for (let i = 0; i < 20; i++) {
+                particlesArray.push(new StarParticle(x, y));
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particlesArray.length - 1; i >= 0; i--) {
+                particlesArray[i].update();
+                if (particlesArray[i].alpha <= 0) {
+                    particlesArray.splice(i, 1);
+                } else {
+                    particlesArray[i].draw();
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // --- 2. Hệ Thống Âm Thanh (Web Audio API) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playToneFeedback(isCorrect) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            
+            if (isCorrect) {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); // E5
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(240, audioCtx.currentTime); // Trầm dịu hơn
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+            }
+        }
+
+        // --- 3. Cơ Sở Dữ Liệu Câu Hỏi Hoàn Chỉnh ---
+        const exerciseData = {
+            ex1: [
+                { id: 1, label: "1", text: "Chọn từ có phần gạch chân phát âm khác biệt (âm phát âm của chữ 'd'):", options: { A: "duck", B: "individual", C: "during", D: "dance" }, answer: "B", exp: "👉 Chữ <strong>d</strong> trong từ <strong>individual</strong> phát âm là <strong>/dʒ/</strong>.<br>👉 Các từ còn lại phát âm là âm <strong>/d/</strong> thông thường." },
+                { id: 2, label: "2", text: "Chọn từ có phần gạch chân phát âm khác biệt (âm phát âm của chữ 't'):", options: { A: "student", B: "teacher", C: "nature", D: "town" }, answer: "C", exp: "👉 Chữ <strong>t</strong> trong từ <strong>nature</strong> phát âm thành âm <strong>/tʃ/</strong> (/ˈneɪtʃər/).<br>👉 Các từ còn lại phát âm là <strong>/t/</strong>." },
+                { id: 3, label: "3", text: "Chọn từ có phần gạch chân phát âm khác biệt (âm câm của 't'):", options: { A: "listen", B: "comparative", C: "city", D: "tasty" }, answer: "A", exp: "👉 Chữ <strong>t</strong> trong từ <strong>listen</strong> là âm câm (không được phát âm).<br>👉 Các từ còn lại âm <strong>t</strong> vẫn được phát âm là <strong>/t/</strong> rõ ràng." },
+                { id: 4, label: "4", text: "Chọn từ có phần gạch chân phát âm khác biệt (âm bật hơi của 't'):", options: { A: "top", B: "stay", C: "ten", D: "tomato" }, answer: "B", exp: "👉 Chữ <strong>t</strong> trong từ <strong>stay</strong> đứng ngay sau âm /s/ nên trở thành âm không bật hơi.<br>👉 Các từ còn lại đều đứng đầu từ nên bật hơi mạnh <strong>/tʰ/</strong>." },
+                { id: 5, label: "5", text: "Chọn từ có phần gạch chân phát âm khác biệt (âm phát âm của chữ 't'):", options: { A: "boat", B: "desert", C: "question", D: "mountain" }, answer: "C", exp: "👉 Chữ <strong>t</strong> trong từ <strong>question</strong> phát âm là <strong>/tʃ/</strong> (/ˈkwestʃən/).<br>👉 Các từ còn lại chữ <strong>t</strong> phát âm thành âm <strong>/t/</strong> thông thường." },
+                { id: 6, label: "6", text: "Chọn từ có phần gạch chân phát âm khác biệt (âm bật hơi của 't'):", options: { A: "tune", B: "stop", C: "stick", D: "sticker" }, answer: "A", exp: "👉 Từ <strong>tune</strong> có âm <strong>t</strong> bật hơi mạnh do đứng đầu từ.<br>👉 Ba từ còn lại chứa tổ hợp cụm <strong>st</strong> nên âm <strong>t</strong> bị triệt tiêu bật hơi." },
+                { id: 7, label: "7", text: "Chọn từ có phần gạch chân phát âm khác biệt (âm bật hơi của 't'):", options: { A: "pretty", B: "potato", C: "test", D: "steer" }, answer: "D", exp: "👉 Chữ <strong>t</strong> trong <strong>steer</strong> đứng sau âm /s/ nên không bật hơi.<br>👉 Các từ còn lại có âm <strong>t</strong> phát âm bật hơi thông thường." },
+                { id: 8, label: "8", text: "Chọn từ có phần gạch chân phát âm khác biệt (âm phát âm của chữ 'd'):", options: { A: "dislike", B: "sandy", C: "reading", D: "education" }, answer: "D", exp: "👉 Chữ <strong>d</strong> trong từ <strong>education</strong> phát âm đặc biệt là <strong>/dʒ/</strong> (/ˌedʒuˈkeɪʃn/).<br>👉 Các từ còn lại chữ <strong>d</strong> phát âm là âm <strong>/d/</strong>." },
+                { id: 9, label: "9", text: "Chọn từ có phần gạch chân phát âm khác biệt (âm bật hơi của 't'):", options: { A: "state", B: "tip", C: "statement", D: "station" }, answer: "B", exp: "👉 Từ <strong>tip</strong> đứng đầu từ đơn lẻ nên chữ <strong>t</strong> bật hơi mạnh.<br>👉 Ba từ còn lại chữ <strong>t</strong> đứng sau /s/ nên không còn bật hơi." },
+                { id: 10, label: "10", text: "Chọn từ có vị trí phát âm của chữ 't' khác biệt:", options: { A: "lost", B: "tennis", C: "photo", D: "telephone" }, answer: "A", exp: "👉 Từ <strong>lost</strong> có chữ <strong>t</strong> nằm ở cuối từ làm âm đuôi tạo thành cụm /st/.<br>👉 Các từ còn lại âm <strong>t</strong> nằm ở vị trí đầu từ hoặc giữa từ." }
+            ],
+            ex2: [
+                { id: 1, label: "1", text: "Chọn từ có vị trí trọng âm chính khác biệt:", options: { A: "backpack", B: "compass", C: "inform", D: "landscape" }, answer: "C", exp: "👉 Động từ <strong>inform</strong> nhấn trọng âm vào âm tiết thứ 2 (/ɪnˈfɔːm/).<br>👉 Các danh từ còn lại nhấn âm tiết thứ 1." },
+                { id: 2, label: "2", text: "Chọn từ có vị trí trọng âm chính khác biệt:", options: { A: "litter", B: "about", C: "suncream", D: "station" }, answer: "B", exp: "👉 Từ <strong>about</strong> nhấn trọng âm vào âm tiết thứ 2 (/əˈbaʊt/).<br>👉 Các từ còn lại nhấn âm tiết thứ 1." },
+                { id: 3, label: "3", text: "Chọn từ có vị trí trọng âm chính khác biệt:", options: { A: "many", B: "column", C: "repeat", D: "wonder" }, answer: "C", exp: "👉 Động từ <strong>repeat</strong> nhấn trọng âm vào âm tiết thứ 2 (/rɪˈpiːt/).<br>👉 Các từ còn lại nhấn âm tiết thứ 1." },
+                { id: 4, label: "4", text: "Chọn từ có vị trí trọng âm chính khác biệt:", options: { A: "explore", B: "canteen", C: "accept", D: "number" }, answer: "D", exp: "👉 Danh từ <strong>number</strong> nhấn trọng âm vào âm tiết thứ 1 (/ˈnʌmbər/).<br>👉 Các từ còn lại nhấn âm tiết thứ 2." },
+                { id: 5, label: "5", text: "Chọn từ có vị trí trọng âm chính khác biệt:", options: { A: "attractive", B: "necessary", C: "forgettable", D: "traditional" }, answer: "B", exp: "👉 Tính từ <strong>necessary</strong> nhấn trọng âm vào âm tiết thứ 1 (/ˈnesəsəri/).<br>👉 Các từ còn lại nhấn âm tiết thứ 2." },
+                { id: 6, label: "6", text: "Chọn từ có vị trí trọng âm chính khác biệt:", options: { A: "appointment", B: "waterfall", C: "cathedral", D: "museum" }, answer: "B", exp: "👉 Danh từ <strong>waterfall</strong> nhấn trọng âm vào âm tiết thứ 1 (/ˈwɔːtəfɔːl/).<br>👉 Các từ còn lại nhấn âm tiết thứ 2." },
+                { id: 7, label: "7", text: "Chọn từ có vị trí trọng âm chính khác biệt:", options: { A: "present", B: "along", C: "workshop", D: "suburb" }, answer: "B", exp: "👉 Giới từ/Trạng từ <strong>along</strong> nhấn trọng âm vào âm tiết thứ 2 (/əˈlɒŋ/).<br>👉 Các từ còn lại là danh từ nhấn âm tiết thứ 1." },
+                { id: 8, label: "8", text: "Chọn từ có vị trí trọng âm chính khác biệt:", options: { A: "natural", B: "scissors", C: "important", D: "plaster" }, answer: "C", exp: "👉 Tính từ <strong>important</strong> nhấn trọng âm vào âm tiết thứ 2 (/ɪmˈpɔːtnt/).<br>👉 Các từ còn lại nhấn âm tiết thứ 1." },
+                { id: 9, label: "9", text: "Chọn từ có vị trí trọng âm chính khác biệt:", options: { A: "umbrella", B: "desert", C: "mountain", D: "river" }, answer: "A", exp: "👉 Danh từ <strong>umbrella</strong> nhấn trọng âm vào âm tiết thứ 2 (/ʌmˈbrelə/).<br>👉 Các từ còn lại nhấn âm tiết thứ 1." },
+                { id: 10, label: "10", text: "Chọn từ có vị trí trọng âm chính khác biệt:", options: { A: "island", B: "forest", C: "canteen", D: "wonder" }, answer: "C", exp: "👉 Danh từ <strong>canteen</strong> nhấn trọng âm vào âm tiết thứ 2 (/kænˈtiːn/).<br>👉 Các từ còn lại nhấn âm tiết thứ 1." }
+            ]
+        };
+
+        let currentActiveSection = 'ex1';
+        let studentAccumulatedScore = 0;
+        let loggedExamProgress = { ex1: {}, ex2: {} };
+
+        // --- 4. Điều Khiển Lời Thoại Mascot Cú Con ---
+        const correctOwlPhrases = ["Tuyệt vời ông mặt trời! 🎉", "Con giỏi quá xá quà xa! 🌟", "Xuất sắc luôn con ơi! 🔥", "Đúng rồi! Cố lên con nhé! 💕"];
+        const wrongOwlPhrases = ["Gần đúng rồi, cố lên con! 💪", "Đọc kỹ lại một xíu nha! 🌱", "Không sao cả, thử lại câu tiếp nhé! ✨"];
+
+        function triggerMascotReaction(isCorrect) {
+            const owl = document.getElementById('owl-mascot');
+            const bubble = document.getElementById('owl-speech-bubble');
+            
+            owl.className = "owl-dancing text-4xl md:text-5xl pointer-events-auto cursor-pointer";
+            
+            if (isCorrect) {
+                bubble.innerText = correctOwlPhrases[Math.floor(Math.random() * correctOwlPhrases.length)];
+            } else {
+                bubble.innerText = wrongOwlPhrases[Math.floor(Math.random() * wrongOwlPhrases.length)];
+            }
+
+            setTimeout(() => {
+                owl.className = "owl-idle text-4xl md:text-5xl pointer-events-auto cursor-pointer";
+            }, 1400);
+        }
+
+        function pokeMascot() {
+            const bubble = document.getElementById('owl-speech-bubble');
+            bubble.innerText = "Hì hì, đừng chọc cú nè, lo làm bài nha! 🦉💚";
+        }
+
+        // --- 5. Logic Chuyển Đổi Tab & Khởi Tạo Câu Hỏi ---
+        function changeSectionTab(sectionKey) {
+            currentActiveSection = sectionKey;
+            
+            const btn1 = document.getElementById('tab-ex1');
+            const btn2 = document.getElementById('tab-ex2');
+            const headerText = document.getElementById('exercise-main-title');
+            const headerIcon = document.getElementById('header-icon');
+
+            if (sectionKey === 'ex1') {
+                btn1.className = "py-2.5 text-xs md:text-sm font-medium rounded-lg text-center option-card active:scale-[0.97] bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm";
+                btn2.className = "py-2.5 text-xs md:text-sm font-medium rounded-lg text-center option-card active:scale-[0.97] text-slate-400 hover:text-white";
+                headerText.innerText = "Exercise 1: Mark the letter A, B, C, or D to indicate the word whose underlined part differs from the other three in pronunciation in each of the following questions.";
+                headerIcon.innerText = "🗣️";
+            } else {
+                btn2.className = "py-2.5 text-xs md:text-sm font-medium rounded-lg text-center option-card active:scale-[0.97] bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm";
+                btn1.className = "py-2.5 text-xs md:text-sm font-medium rounded-lg text-center option-card active:scale-[0.97] text-slate-400 hover:text-white";
+                headerText.innerText = "Exercise 2: Mark the letter A, B, C, or D to indicate the word that differs from the other three in the position of primary stress in each of the following questions.";
+                headerIcon.innerText = "⚡";
+            }
+
+            renderQuizListFeed();
+        }
+
+        function renderQuizListFeed() {
+            const feedContainer = document.getElementById('quiz-feed-wrapper');
+            feedContainer.innerHTML = '';
+
+            const activeList = exerciseData[currentActiveSection];
+
+            activeList.forEach((questionObj, index) => {
+                const questionContainerCard = document.createElement('div');
+                questionContainerCard.className = "pb-6 border-b border-slate-100 last:border-none";
+
+                const blockHeader = document.createElement('div');
+                blockHeader.className = "flex items-start gap-2.5 mb-4";
+                blockHeader.innerHTML = `
+                    <span class="font-poster bg-gradient-to-r from-slate-600 to-slate-700 text-white text-[10px] font-medium px-2.5 py-1 rounded-md shrink-0 mt-0.5 tracking-wider uppercase">CÂU ${questionObj.label}</span>
+                    <span class="font-bubble font-medium text-slate-800 text-sm md:text-base leading-relaxed">${questionObj.text}</span>
+                `;
+                questionContainerCard.appendChild(blockHeader);
+
+                const buttonsGrid = document.createElement('div');
+                buttonsGrid.className = "font-poster grid grid-cols-1 md:grid-cols-2 gap-3 text-sm md:text-base";
+
+                const historicalState = loggedExamProgress[currentActiveSection][index];
+
+                Object.entries(questionObj.options).forEach(([key, value]) => {
+                    const optionBtn = document.createElement('button');
+                    // Giao diện viền mỏng thanh mảnh, màu sắc Slate dịu mắt
+                    optionBtn.className = "option-card flex items-center justify-between p-3.5 bg-white border border-slate-200 rounded-xl text-left font-normal text-slate-700 hover:bg-emerald-50/50 hover:border-emerald-300 active:scale-[0.97] cursor-pointer shadow-sm";
+                    
+                    let statusRadioNode = `<span class="w-4 h-4 rounded-full border border-slate-300 bg-white flex items-center justify-center shrink-0"></span>`;
+
+                    if (historicalState) {
+                        optionBtn.disabled = true;
+                        optionBtn.style.transform = 'none';
+                        if (key === questionObj.answer) {
+                            // Tone xanh pastel khi đáp án đúng
+                            optionBtn.className = "option-card flex items-center justify-between p-3.5 bg-emerald-100 border border-emerald-300 rounded-xl text-left font-medium text-emerald-900 shadow-sm";
+                            statusRadioNode = `<span class="w-4 h-4 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0">✓</span>`;
+                        } else if (historicalState.selected === key) {
+                            // Tone hồng pastel khi đáp án sai
+                            optionBtn.className = "option-card flex items-center justify-between p-3.5 bg-rose-100 border border-rose-300 rounded-xl text-left font-medium text-rose-900 shadow-sm";
+                            statusRadioNode = `<span class="w-4 h-4 rounded-full bg-rose-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0">✕</span>`;
+                        } else {
+                            optionBtn.className = "option-card flex items-center justify-between p-3.5 bg-slate-50 border border-slate-100/70 opacity-40 rounded-xl text-left font-normal text-slate-400 shadow-none pointer-events-none";
+                            statusRadioNode = `<span class="w-4 h-4 rounded-full border border-slate-200 bg-slate-100 shrink-0"></span>`;
+                        }
+                    } else {
+                        optionBtn.onclick = (e) => processStudentSelection(index, key, e);
+                    }
+
+                    optionBtn.innerHTML = `<span><strong class="text-emerald-600 font-medium mr-1.5">${key}.</strong> ${value}</span> ${statusRadioNode}`;
+                    if(historicalState && (key === questionObj.answer || historicalState.selected === key)) {
+                        optionBtn.innerHTML = `<span><strong class="text-slate-800 font-medium mr-1.5">${key}.</strong> ${value}</span> ${statusRadioNode}`;
+                    }
+                    buttonsGrid.appendChild(optionBtn);
+                });
+
+                questionContainerCard.appendChild(buttonsGrid);
+
+                if (historicalState) {
+                    const structuralExpBox = document.createElement('div');
+                    structuralExpBox.className = "mt-3 p-4 bg-teal-50/60 border border-teal-100 rounded-xl relative overflow-hidden text-slate-700 font-sans shadow-sm";
+                    structuralExpBox.innerHTML = `
+                        <div class="font-poster flex items-center gap-1.5 font-medium text-slate-800 uppercase text-xs mb-1.5 tracking-wider">
+                            <span>💡</span> GIẢI THÍCH TỪ CÔ LÊ HẰNG:
+                        </div>
+                        <div class="text-slate-600 text-xs md:text-sm leading-relaxed space-y-1 pl-3 border-l-2 border-emerald-500 font-normal">
+                            ${questionObj.exp}
+                        </div>
+                    `;
+                    questionContainerCard.appendChild(structuralExpBox);
+                }
+
+                feedContainer.appendChild(questionContainerCard);
+            });
+        }
+
+        function processStudentSelection(index, optionChar, event) {
+            if (loggedExamProgress[currentActiveSection][index]) return;
+
+            const referenceQuestion = exerciseData[currentActiveSection][index];
+            const isCorrect = (optionChar === referenceQuestion.answer);
+
+            if (isCorrect) {
+                studentAccumulatedScore += 10;
+                if (event) {
+                    spawnConfetti(event.clientX, event.clientY);
+                }
+            }
+
+            loggedExamProgress[currentActiveSection][index] = { selected: optionChar, isCorrect: isCorrect };
+            document.getElementById('footer-live-score').innerText = studentAccumulatedScore;
+            
+            playToneFeedback(isCorrect);
+            triggerMascotReaction(isCorrect);
+            renderQuizListFeed();
+        }
+
+        function alertFinishMessage() {
+            alert(`🎉 Chúc mừng con yêu đã hoàn thành xong bài tập ngày hôm nay!\n🏆 Tổng số điểm đạt được: ${studentAccumulatedScore} điểm. Con hãy chụp màn hình gửi lại cho cô nhé!`);
+        }
+
+        window.onload = () => {
+            renderQuizListFeed();
+        };
+    </script>
+</body>
+</html>
